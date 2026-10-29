@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -17,13 +18,12 @@ import dev.nextftc.control.feedforward.SimpleFeedforward;
 public class flywheelPIDTuner extends OpMode {
 
     public static double kP = 0,kI = 0, kD = 0;
-    public static double kS = 0,kV = 0;
+    public static double kS = 0.037,kV = 0;
 
-    boolean tuningKS = false;
+    public static boolean tuningKS = false,reversed;
 
     public static double target;
-    PIDController pid = new PIDController(kP,kI,kD);
-    SimpleFeedforward ff = new SimpleFeedforward(kS,kV,0);
+
 
 
 
@@ -31,11 +31,18 @@ public class flywheelPIDTuner extends OpMode {
     @Override
     public void init() {
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
+        if(reversed) flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
     @Override
     public void loop() {
+
+        PIDController pid = new PIDController(kP,kI,kD);
+        SimpleFeedforward ff = new SimpleFeedforward(kS,kV,0);
+
+
 
         if(tuningKS){
             flywheel.setPower(kS);

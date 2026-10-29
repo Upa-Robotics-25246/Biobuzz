@@ -51,14 +51,14 @@ public class ScrimTeleOp extends OpMode {
             pollenPIDCoeffs = new PIDCoefficients(0,0,0); // TODO tune these
 
     SimpleFFCoefficients
-            pollenFFCoeffs = new SimpleFFCoefficients(0,0),
+            pollenFFCoeffs = new SimpleFFCoefficients(0.037,0.00037),
             nectarFFCoeffs = new SimpleFFCoefficients(0,0);
 
 
 
 
     PIDController nectarPID = new PIDController(nectarPIDCoeffs), pollenPID = new PIDController(pollenPIDCoeffs);
-    SimpleFeedforward nectarFF = new SimpleFeedforward(nectarFFCoeffs), pollenFF = new SimpleFeedforward(nectarFFCoeffs);
+    SimpleFeedforward nectarFF = new SimpleFeedforward(nectarFFCoeffs), pollenFF = new SimpleFeedforward(pollenFFCoeffs);
 
     DcMotorEx pollen, nectar;
 
