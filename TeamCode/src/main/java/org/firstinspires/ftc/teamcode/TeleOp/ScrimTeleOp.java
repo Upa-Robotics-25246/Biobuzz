@@ -40,8 +40,6 @@ public class ScrimTeleOp extends OpMode {
     boolean nectarBlockersOpen = false;
 
     DcMotorEx intTrans; //intake transfer
-    boolean intTransToggle = false;
-    boolean intTransDirection = true; // true for intake, false for outtake
 
 
 
@@ -68,6 +66,18 @@ public class ScrimTeleOp extends OpMode {
 
     boolean shooting = false;
 
+
+    enum IntakeState{
+        FORWARD,
+        STOPPED,
+        REVERSE
+    }
+
+    IntakeState intakeState = IntakeState.STOPPED;
+
+
+    public static double necPower = 0, polPower = 0;
+    public static boolean usingPower;
 
 
 
@@ -116,6 +126,11 @@ public class ScrimTeleOp extends OpMode {
         double pollenPower = pollenPID.calculate(pollenError) + pollenFF.calculate(pollenVelo);
         double nectarPower = nectarPID.calculate(nectarError) + nectarFF.calculate(nectarVelo);
 
+        if(usingPower){
+            nectarPower = necPower;
+            pollenPower = polPower;
+        }
+
 
         // drive code
         double y = -gamepad1.left_stick_y;
@@ -128,20 +143,22 @@ public class ScrimTeleOp extends OpMode {
 
         double botHeading = imu1.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-        // Rotate the movement direction counter to the bot's rotation
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+//        // Rotate the movement direction counter to the bot's rotation
+//        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+//        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+//
+//        rotX = rotX * 1.1;  // Counteract imperfect strafing
 
-        rotX = rotX * 1.1;  // Counteract imperfect strafing
+        x = x * 1.1;
 
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
         // but only if at least one is out of the range [-1, 1]
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        double frontLeftPower = (y + x + rx) / denominator;
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
 
         motorTL.setPower(frontLeftPower);
         motorBL.setPower(backLeftPower);
@@ -173,22 +190,38 @@ public class ScrimTeleOp extends OpMode {
 
 
     // intake + transfer code
-        // intake balls
+
         if(gamepad2.dpadUpWasPressed()){
-            intTransToggle = !intTransToggle; // toggle intake on and off
-            intTransDirection = true; // make sure it is intake and not outtake
+            switch(intakeState){
+
+                case REVERSE:
+                    intakeState = IntakeState.STOPPED;
+                case STOPPED:
+                    intakeState = IntakeState.FORWARD;
+            }
         }
 
-        // outtake balls
         if(gamepad2.dpadDownWasPressed()){
-            intTransToggle = !intTransToggle; // toggle intake
-            intTransDirection = false; // outtake
+            switch(intakeState){
+
+                case FORWARD:
+                    intakeState = IntakeState.STOPPED;
+                case STOPPED:
+                    intakeState = IntakeState.REVERSE;
+            }
         }
 
-        if(intTransToggle) {
-            if (intTransDirection) intTrans.setPower(1); //TODO fine tune this power
-            else intTrans.setPower(-1);
+        switch(intakeState){
+            case FORWARD:
+                intTrans.setPower(1);
+            case STOPPED:
+                intTrans.setPower(0);
+            case REVERSE:
+                intTrans.setPower(-1);
         }
+
+
+
 
     // shooting code
         if(gamepad2.xWasPressed()){
