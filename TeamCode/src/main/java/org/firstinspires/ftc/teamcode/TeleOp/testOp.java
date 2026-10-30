@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,6 +15,9 @@ import dev.nextftc.control.feedback.PIDController;
 import dev.nextftc.control.feedforward.SimpleFFCoefficients;
 import dev.nextftc.control.feedforward.SimpleFeedforward;
 
+
+@TeleOp
+@Config
 public class testOp extends OpMode {
 
     DcMotorEx fl,bl,fr,br;
@@ -34,7 +42,6 @@ public class testOp extends OpMode {
     PIDController nectarPID = new PIDController(nectarPIDCoeffs), pollenPID = new PIDController(pollenPIDCoeffs);
     SimpleFeedforward nectarFF = new SimpleFeedforward(nectarFFCoeffs), pollenFF = new SimpleFeedforward(nectarFFCoeffs);
 
-
     public static double intTransSpeed = 0, pollenTarget = 0, nectarTarget = 0;
 
     public static boolean nectarClosed = true, pollenClosed = true,flywheelPower = false;
@@ -49,6 +56,11 @@ public class testOp extends OpMode {
 
     @Override
     public void init() {
+
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        intTrans = hardwareMap.get(DcMotorEx.class,"intTrans");
+
         nectarFly = hardwareMap.get(DcMotorEx.class,"nectarFly");
         pollenFly = hardwareMap.get(DcMotorEx.class,"pollenFly");
 
@@ -59,10 +71,10 @@ public class testOp extends OpMode {
         pollenBlocker.setPosition(POLLEN_CLOSED);
 
 
-        fl = hardwareMap.get(DcMotorEx.class, "fl");
-        fr = hardwareMap.get(DcMotorEx.class, "fr");
-        bl = hardwareMap.get(DcMotorEx.class, "bl");
-        br = hardwareMap.get(DcMotorEx.class, "br");
+        fr = hardwareMap.get(DcMotorEx.class, "motorTR");
+        fl = hardwareMap.get(DcMotorEx.class, "motorTL");
+        bl = hardwareMap.get(DcMotorEx.class, "motorBL");
+        br = hardwareMap.get(DcMotorEx.class, "motorBR");
         fl.setDirection(DcMotorSimple.Direction.REVERSE);
         bl.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -98,7 +110,7 @@ public class testOp extends OpMode {
 
 
         //nectar blocker
-        if(gamepad2.aWasPressed()){
+        if(gamepad2.bWasPressed()){
             nectarClosed = !nectarClosed;
         }
 
@@ -110,7 +122,7 @@ public class testOp extends OpMode {
 
         //pollen blocker
 
-        if(gamepad2.bWasPressed()){
+        if(gamepad2.aWasPressed()){
             pollenClosed = !pollenClosed;
         }
 
@@ -123,20 +135,20 @@ public class testOp extends OpMode {
 
         //flywheels
 
-        if(gamepad1.dpadUpWasPressed()){
-            nectarTarget += 100;
-        }
-        if(gamepad1.dpadDownWasPressed()) {
-            nectarTarget -= 100;
-        }
-        if(gamepad1.dpadRightWasPressed()){
-            pollenTarget += 100;
-        }
-        if(gamepad1.dpadLeftWasPressed()) {
-            pollenTarget -= 100;
-        }
+//        if(gamepad1.dpadUpWasPressed()){
+//            nectarTarget += 100;
+//        }
+//        if(gamepad1.dpadDownWasPressed()) {
+//            nectarTarget -= 100;
+//        }
+//        if(gamepad1.dpadRightWasPressed()){
+//            pollenTarget += 100;
+//        }
+//        if(gamepad1.dpadLeftWasPressed()) {
+//            pollenTarget -= 100;
+//        }
 
-        if(flywheelPower){ // power is only set by FTCDASH
+        /*if(flywheelPower){ // power is only set by FTCDASH
             nectarFly.setPower(nectarPower);
             pollenFly.setPower(pollenPower);
         }else{
@@ -149,7 +161,29 @@ public class testOp extends OpMode {
             nectarFly.setPower(nectarOut);
             pollenFly.setPower(pollenOut);
 
+        }*/
+
+        if(gamepad1.dpadUpWasPressed() && pollenPower <=1){
+            pollenPower += 0.1;
         }
+        if(gamepad1.dpadDownWasPressed() && pollenPower >=-1){
+            pollenPower -= 0.1;
+        }
+        if(gamepad1.dpadRightWasPressed() && nectarPower <=1){
+            nectarPower += 0.1;
+        }
+        if(gamepad1.dpadLeftWasPressed() && nectarPower >=-1){
+            nectarPower -= 0.1;
+        }
+
+        //velo for nectar in -
+        nectarFly.setPower(nectarPower);
+        pollenFly.setPower(pollenPower);
+        telemetry.addData("nectarPower",nectarPower);
+        telemetry.addData("pollenPower",pollenPower);
+        telemetry.addData("nectar Speed",nectarFly.getVelocity());
+        telemetry.addData("pollen Speed",pollenFly.getVelocity());
+        telemetry.addData("intTransPower",intTransSpeed);
 
     }
 }
