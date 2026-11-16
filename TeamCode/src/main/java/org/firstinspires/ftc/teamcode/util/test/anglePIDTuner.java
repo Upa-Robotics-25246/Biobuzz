@@ -26,8 +26,8 @@ import java.util.List;
 import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.control.feedback.PIDController;
 
-@Config
-@TeleOp
+//@Config
+//@TeleOp
 public class anglePIDTuner extends OpMode {
 
 

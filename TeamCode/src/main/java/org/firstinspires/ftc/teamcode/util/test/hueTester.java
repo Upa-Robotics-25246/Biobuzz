@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 
-@TeleOp
+//@TeleOp
 public class hueTester extends OpMode {
 
     NormalizedColorSensor sensor;

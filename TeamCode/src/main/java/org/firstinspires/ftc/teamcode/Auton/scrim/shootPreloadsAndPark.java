@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auton;
+package org.firstinspires.ftc.teamcode.Auton.scrim;
 
 import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.ivy.Scheduler.schedule;
@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.util.lib.PathOptions;
 import org.firstinspires.ftc.teamcode.util.pedro.Constants;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class shootPreloadsAndPark extends OpMode {
 
     PoseFactory p = PoseFactory.degrees();
 
-    Pose start , cp1 , end;
+    Pose start, cp1,end;
 
 
     DcMotorEx intTrans;
@@ -45,9 +46,13 @@ public class shootPreloadsAndPark extends OpMode {
     public static boolean red = false, far = false;
 
     ElapsedTime shootTimer = new ElapsedTime();
-    public Path path1(){
-        return curve(start,cp1,end).constant(start);
-    };
+    public Path path1() {
+        return curve(PathOptions.reflect(start,cp1,end)).constant(start);
+    }
+
+
+
+
 
     public Command autonFar(){
         return follow(follower,path1());
@@ -77,7 +82,7 @@ public class shootPreloadsAndPark extends OpMode {
     public static double nectarVelo = 1560;
     public static double pollenVelo = 500;
 
-        public void shoot(boolean stopped){
+    public void shoot(boolean stopped){
 
         if(stopped){
             pollen.setPower(0);

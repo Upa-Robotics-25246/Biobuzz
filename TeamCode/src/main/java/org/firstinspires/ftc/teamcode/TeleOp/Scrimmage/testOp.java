@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeleOp;
+package org.firstinspires.ftc.teamcode.TeleOp.Scrimmage;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -13,8 +13,8 @@ import dev.nextftc.control.feedback.PIDController;
 import dev.nextftc.control.feedforward.SimpleFeedforward;
 
 
-@TeleOp
-@Config
+//@TeleOp
+//@Config
 public class testOp extends OpMode {
 
     DcMotorEx fl, bl, fr, br;

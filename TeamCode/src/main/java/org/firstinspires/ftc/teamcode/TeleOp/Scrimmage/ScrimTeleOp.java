@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.TeleOp;
+package org.firstinspires.ftc.teamcode.TeleOp.Scrimmage;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -19,8 +19,8 @@ import java.util.List;
 import dev.nextftc.control.feedback.PIDController;
 import dev.nextftc.control.feedforward.SimpleFeedforward;
 
-@TeleOp
-@Config
+//@TeleOp
+//@Config
 public class ScrimTeleOp extends OpMode {
 
     // motors
