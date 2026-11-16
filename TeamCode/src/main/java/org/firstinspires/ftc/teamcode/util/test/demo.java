@@ -1,22 +1,12 @@
 package org.firstinspires.ftc.teamcode.util.test;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+@TeleOp
+public class demo extends OpMode{
 
 
-import java.util.Locale;
-
-import dev.nextftc.control.feedback.PIDCoefficients;
-import dev.nextftc.control.feedback.PIDController;
-
-public class demo  extends OpMode{
-
-
-    CRServo crServo;
 
 
     @Override
@@ -24,16 +14,11 @@ public class demo  extends OpMode{
 
     }
 
+
+
+
     @Override
-    public void loop(){
-
-
+    public void loop() {
 
     }
 }
-
-
-
-
-
-

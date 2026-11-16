@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.util.test.LM1;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,6 +15,9 @@ import java.util.List;
 import dev.nextftc.control.feedback.PIDController;
 import dev.nextftc.control.feedforward.SimpleFeedforward;
 
+
+@TeleOp
+@Config
 public class shooterTest extends OpMode {
 
 
