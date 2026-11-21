@@ -16,7 +16,7 @@ public class intake extends OpMode {
 
     DcMotorEx intake,fl,fr,bl,br;
 
-    public static double intakeSpeed = 0;
+    public static double intakeSpeed = 1;
 
     List<LynxModule> hubs;
 
@@ -69,6 +69,8 @@ public class intake extends OpMode {
 
 
         intake.setPower(intakeSpeed);
+
+        telemetry.addData("Intake: ",intakeSpeed);
 
 
     }

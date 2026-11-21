@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.util.subsystems.Intake;
+
 import dev.nextftc.control.feedback.PIDController;
 import dev.nextftc.control.feedforward.SimpleFeedforward;
 
@@ -22,16 +24,22 @@ public class flywheelPIDTuner extends OpMode {
 
     public static double target;
 
+    public static Intake.IntakeState intakeState = Intake.IntakeState.STOPPED;
+
+    Intake intake;
 
 
 
-    DcMotorEx nflywheel,pflywheel;
+
+    DcMotorEx flywheel;
     @Override
     public void init() {
-        nflywheel = hardwareMap.get(DcMotorEx.class, "nectarFly");
-        pflywheel = hardwareMap.get(DcMotorEx.class,"pollenFly");
+        flywheel = hardwareMap.get(DcMotorEx.class,"pollenShooter");
+        flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        intake = new Intake(hardwareMap);
     }
 
     @Override
@@ -43,23 +51,50 @@ public class flywheelPIDTuner extends OpMode {
 
 
         if(tuningKS){
-            nflywheel.setPower(kS);
+            flywheel.setPower(kS);
         }
         else {
-            double error = target - nflywheel.getVelocity();
+            double error = target - flywheel.getVelocity();
 
             double power = pid.calculate(error) + ff.calculate(target);
 
 
-            nflywheel.setPower(power);
-            pflywheel.setPower(power);
+            flywheel.setPower(power);
 
             telemetry.addData("Target:", target);
-            telemetry.addData("Current:", nflywheel.getVelocity());
+            telemetry.addData("Current:", flywheel.getVelocity());
             telemetry.addData("error:", error);
             telemetry.update();
         }
 
+
+        if(gamepad2.dpadUpWasPressed()){
+            switch(intakeState){
+                case STOPPED:
+                    intakeState = Intake.IntakeState.FORWARD;
+                    break;
+                case REVERSE:
+                    intakeState = Intake.IntakeState.FORWARD;
+                    break;
+                case FORWARD:
+                    intakeState = Intake.IntakeState.STOPPED;
+                    break;
+            }
+        }
+        if(gamepad2.dpadDownWasPressed()){
+            switch(intakeState){
+                case STOPPED:
+                    intakeState = Intake.IntakeState.REVERSE;
+                    break;
+                case REVERSE:
+                    intakeState = Intake.IntakeState.STOPPED;
+                    break;
+                case FORWARD:
+                    intakeState = Intake.IntakeState.REVERSE;
+                    break;
+            }
+        }
+        intake.setState(intakeState);
 
 
     }

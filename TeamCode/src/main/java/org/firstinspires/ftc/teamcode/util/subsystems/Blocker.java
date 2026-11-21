@@ -9,7 +9,7 @@ public class Blocker {
     private double testedOpen;
     private double testedClosed;
 
-    public enum BlockerPosition{
+    public static enum BlockerPosition{
         OPEN,
         CLOSED
     }

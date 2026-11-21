@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.subsystems.Shooter;
 public class NectarShooter extends Shooter {
 
     public NectarShooter(HardwareMap hardwareMap){
-        super(hardwareMap,"nectsrShooter",0); // TODO tune velo
+        super(hardwareMap,"nectarShooter",0,false); // TODO tune velo
     }
 
 }

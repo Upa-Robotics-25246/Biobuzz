@@ -40,7 +40,7 @@ public class shootPreloadsAndPark extends OpMode {
     Pose start, cp1,end;
 
 
-    DcMotorEx intTrans;
+    //DcMotorEx intTrans;
 
 
     public static boolean red = false, far = false;
@@ -60,45 +60,45 @@ public class shootPreloadsAndPark extends OpMode {
 
     public Command autonClose(){
         return sequential(
-                infinite(()->shoot(false)).until(()->shootTimer.seconds() > 1),
-                instant(()-> intTrans.setPower(1)),
-                waitMs(1000),
-                instant(()->intTrans.setPower(0)),
-                instant(()->shoot(true)),
+//                infinite(()->shoot(false)).until(()->shootTimer.seconds() > 1),
+//                instant(()-> intTrans.setPower(1)),
+//                waitMs(1000),
+//                instant(()->intTrans.setPower(0)),
+//                instant(()->shoot(true)),
                 follow(follower,path1())
         );
     }
 
 
-    public static double kP = 0.0015,kD = 0.1,kS = 0.045,kV = 0.00034;
-    DcMotorEx pollen, nectar;
-    PIDController nectarPid = new PIDController(kP,0,kD);
-    SimpleFeedforward nectarFf = new SimpleFeedforward(kS,kV,0);
-
-    PIDController pollenPid = new PIDController(kP,0,kD);
-    SimpleFeedforward pollenFf = new SimpleFeedforward(kS,kV,0);
-
-
-    public static double nectarVelo = 1560;
-    public static double pollenVelo = 500;
-
-    public void shoot(boolean stopped){
-
-        if(stopped){
-            pollen.setPower(0);
-            nectar.setPower(0);
-        }else{
-
-            double nectarError = nectarVelo - nectar.getVelocity();
-            double nectarPower = nectarPid.calculate(nectarError) + nectarFf.calculate(nectar.getVelocity());
-            double pollenError = pollenVelo - pollen.getVelocity();
-            double pollenPower = pollenPid.calculate(pollenError) + pollenFf.calculate(pollen.getVelocity());
-
-            nectar.setPower(nectarPower);
-            pollen.setPower(pollenPower);
-        }
-
-    }
+//    public static double kP = 0.0015,kD = 0.1,kS = 0.045,kV = 0.00034;
+//    DcMotorEx pollen, nectar;
+//    PIDController nectarPid = new PIDController(kP,0,kD);
+//    SimpleFeedforward nectarFf = new SimpleFeedforward(kS,kV,0);
+//
+//    PIDController pollenPid = new PIDController(kP,0,kD);
+//    SimpleFeedforward pollenFf = new SimpleFeedforward(kS,kV,0);
+//
+//
+//    public static double nectarVelo = 1560;
+//    public static double pollenVelo = 500;
+//
+//    public void shoot(boolean stopped){
+//
+//        if(stopped){
+//            pollen.setPower(0);
+//            nectar.setPower(0);
+//        }else{
+//
+//            double nectarError = nectarVelo - nectar.getVelocity();
+//            double nectarPower = nectarPid.calculate(nectarError) + nectarFf.calculate(nectar.getVelocity());
+//            double pollenError = pollenVelo - pollen.getVelocity();
+//            double pollenPower = pollenPid.calculate(pollenError) + pollenFf.calculate(pollen.getVelocity());
+//
+//            nectar.setPower(nectarPower);
+//            pollen.setPower(pollenPower);
+//        }
+//
+//    }
 
 
 
@@ -115,13 +115,13 @@ public class shootPreloadsAndPark extends OpMode {
         for (LynxModule hub : hubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
-        pollen = hardwareMap.get(DcMotorEx.class,"pollenFly");
-        pollen.setDirection(DcMotorSimple.Direction.REVERSE);
-        nectar = hardwareMap.get(DcMotorEx.class,"nectarFly");
-
-
-        intTrans = hardwareMap.get(DcMotorEx.class, "intTrans");
-        intTrans.setDirection(DcMotorSimple.Direction.FORWARD);
+//        pollen = hardwareMap.get(DcMotorEx.class,"pollenFly");
+//        pollen.setDirection(DcMotorSimple.Direction.REVERSE);
+//        nectar = hardwareMap.get(DcMotorEx.class,"nectarFly");
+//
+//
+//        intTrans = hardwareMap.get(DcMotorEx.class, "intTrans");
+//        intTrans.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void init_loop(){

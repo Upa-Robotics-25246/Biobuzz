@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.List;
@@ -18,10 +19,10 @@ import dev.nextftc.control.feedforward.SimpleFeedforward;
 
 @TeleOp
 @Config
-public class shooterTest extends OpMode {
+public class shooter extends OpMode {
 
 
-    DcMotorEx intake,fl,fr,bl,br,pollen,nectar;
+    DcMotorEx intake,fl,fr,bl,br,pollen;
 
     public static double intakeSpeed = 0,pollenBlockerPos = 0, nectarBlockerPos = 0;
 
@@ -31,17 +32,14 @@ public class shooterTest extends OpMode {
 
 
     //i think that since its the same motor and wheel, 1 set of tuning values should work
-    //TODO use flywheelPIDTuner class to tune this
-    public static double kP = 0, kD = 0;
-    public static double kS = 0, kV = 0;
+    private double kP = 0.001, kI = 0, kD = 0.1;
+    private double kS = 0.19, kV = 0.0004;
 
-    PIDController nectarPid = new PIDController(kP,0,kD);
-    SimpleFeedforward nectarFf = new SimpleFeedforward(kS,kV,0);
+    public static boolean tuningKS = false;
 
-    PIDController pollenPid = new PIDController(kP,0,kD);
-    SimpleFeedforward pollenFf = new SimpleFeedforward(kS,kV,0);
+    public static double target;
 
-    public static int pollenVelo = 0, nectarVelo = 0;
+
 
 
 
@@ -73,18 +71,20 @@ public class shooterTest extends OpMode {
 
 
         pollen = hardwareMap.get(DcMotorEx.class,"pollenShooter");
-        nectar = hardwareMap.get(DcMotorEx.class,"nectarShooter");
+        pollen.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
     }
 
     @Override
     public void loop() {
 
-        double nectarError = nectarVelo - nectar.getVelocity();
-        double nectarPower = nectarPid.calculate(nectarError) + nectarFf.calculate(nectar.getVelocity());
+        PIDController pid = new PIDController(kP,kI,kD);
+        SimpleFeedforward ff = new SimpleFeedforward(kS,kV,0);
 
 
-        double pollenError = pollenVelo - pollen.getVelocity();
-        double pollenPower = pollenPid.calculate(pollenError) + pollenFf.calculate(pollen.getVelocity());
+        double pollenError = target - pollen.getVelocity();
+        double pollenPower = pid.calculate(pollenError) + ff.calculate(pollen.getVelocity());
 
         for (LynxModule hub : hubs) {
             hub.clearBulkCache();
@@ -121,14 +121,14 @@ public class shooterTest extends OpMode {
 
 
         pollen.setPower(pollenPower);
-        nectar.setPower(nectarPower);
+
 
 
         telemetry.addData("current pollen power",pollen.getPower());
-        telemetry.addData("current nectar power",nectar.getPower());
+       // telemetry.addData("current nectar power",nectar.getPower());
         telemetry.addData("current pollen velocity",pollen.getVelocity());
-        telemetry.addData("current nectar velocty",nectar.getVelocity());
-        telemetry.addData("target pollen velocity",pollenVelo);
-        telemetry.addData("target nectar velocity",nectarVelo);
+       // telemetry.addData("current nectar velocty",nectar.getVelocity());
+        telemetry.addData("target pollen velocity",target);
+       // telemetry.addData("target nectar velocity",nectarVelo);
     }
 }
