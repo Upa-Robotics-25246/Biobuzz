@@ -24,11 +24,11 @@ public class blockerTest extends OpMode {
 
     @Override
     public void loop() {
-        if(gamepad2.aWasPressed()){
+        if(gamepad2.crossWasPressed()){
             pollenBlocker.setState(Blocker.BlockerPosition.OPEN);
             nectarBlocker.setState(Blocker.BlockerPosition.OPEN);
         }
-        if(gamepad2.bWasPressed()){
+        if(gamepad2.circleWasPressed()){
             pollenBlocker.setState(Blocker.BlockerPosition.CLOSED);
             nectarBlocker.setState(Blocker.BlockerPosition.CLOSED);
         }

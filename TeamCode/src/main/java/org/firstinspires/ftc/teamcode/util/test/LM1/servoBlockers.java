@@ -45,6 +45,8 @@ public class servoBlockers extends OpMode {
 
         pollenBlocker = hardwareMap.get(Servo.class,"pollenBlocker");
         nectarBlocker = hardwareMap.get(Servo.class,"nectarBlocker");
+
+        pollenBlocker.setPosition(pollenBlockerPos);
     }
 
     @Override
@@ -78,9 +80,17 @@ public class servoBlockers extends OpMode {
 
         intake.setPower(intakeSpeed);
 
+        if(gamepad1.dpadUpWasPressed()){
+            pollenBlockerPos +=0.1;
+        }
+
+        if(gamepad1.dpadDownWasPressed()){
+            pollenBlockerPos -= 0.1;
+        }
 
         pollenBlocker.setPosition(pollenBlockerPos);
-        nectarBlocker.setPosition(nectarBlockerPos);
+
+        telemetry.addData("pos" , pollenBlockerPos);
 
 
     }

@@ -11,7 +11,7 @@ public class Intake {
         FORWARD
     }
 
-    private double testedSpeed = 0; // TODO change after testing
+    private double testedSpeed = 1; // TODO change after testing
 
     private DcMotorEx intake;
 

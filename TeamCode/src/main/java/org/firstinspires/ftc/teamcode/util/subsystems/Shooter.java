@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import dev.nextftc.control.feedback.PIDController;
@@ -11,35 +12,46 @@ public class Shooter {
     private DcMotorEx shooter;
     private int shooterVelocity;
 
-    private int kP = 0, kI = 0, kD = 0; // TODO tune ts
-    private int kS = 0, kV = 0; // TODO TUNE TS
+    private double kP = 0.001,kI = 0, kD = 0.1;
+    private double kS = 0.04, kV = 0.00035;
 
     private double error;
     private double power;
 
-    PIDController pid = new PIDController(kP,0,kD);
-    SimpleFeedforward ff = new SimpleFeedforward(kS,kV,0);
 
 
-    public Shooter(HardwareMap hardwareMap,String name, int velo){
+
+
+
+    public Shooter(HardwareMap hardwareMap,String name, int velo,boolean reversed){
         shooter = hardwareMap.get(DcMotorEx.class,name);
         shooterVelocity = velo;
+
+        if(reversed) shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+    public Shooter(HardwareMap hardwareMap,String name, int velo,boolean reversed,double kP, double kD, double kS, double kV){
+        shooter = hardwareMap.get(DcMotorEx.class,name);
+        shooterVelocity = velo;
+
+        if(reversed) shooter.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void shooterLoop(){
+        PIDController pid = new PIDController(kP,kI,kD);
+        SimpleFeedforward ff = new SimpleFeedforward(kS,kV,0);
         error = shooterVelocity - shooter.getVelocity();
         power = pid.calculate(error) + ff.calculate(shooter.getVelocity());
+
     }
 
-    public void setSpeed(int velocity){
-        shooterVelocity = velocity;
-        shooter.setPower(power);
-    }
+
     public void setSpeed(double power){
+
         shooter.setPower(power);
+
     }
     public void setSpeed(){
-        shooter.setPower(power);
+        shooter.setPower(this.power);
     }
 
     public DcMotorEx getShooter(){
@@ -59,4 +71,5 @@ public class Shooter {
     public int getTarget(){
         return shooterVelocity;
     }
+
 }
